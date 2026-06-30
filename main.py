@@ -5,6 +5,9 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 
 # --- Core Event Handlers ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # 👇 CHANGE 'YOUR_GITHUB_USERNAME' TO YOUR ACTUAL GITHUB ACCOUNT USERNAME:
+    WELCOME_IMAGE_URL = "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/traderhub-education-bot/main/welcome.jpg"
+
     welcome_text = (
         "📈 **Welcome to TraderHub Education.**\n\n"
         "This channel is dedicated to educational content related to financial markets, "
@@ -28,8 +31,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    await update.message.reply_text(
-        text=welcome_text,
+    # Sends your image along with your welcome layout text neatly pinned below it
+    await update.message.reply_photo(
+        photo=WELCOME_IMAGE_URL,
+        caption=welcome_text,
         reply_markup=reply_markup,
         parse_mode="Markdown"
     )
@@ -39,7 +44,6 @@ async def main():
     if not TOKEN:
         raise ValueError("Missing TELEGRAM_TOKEN parameter inside environment variables.")
 
-    # Initialize the polling engine cleanly without ports
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     
@@ -52,5 +56,5 @@ async def main():
         while True:
             await asyncio.sleep(3600)
 
-# --- DIRECT EXECUTION RUNNER ---
+# --- DIRECT EXECUTION RUNNER WITH NO TYPO-PRONE IF STATEMENTS ---
 asyncio.run(main())
