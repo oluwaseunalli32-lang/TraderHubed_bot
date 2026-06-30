@@ -1,28 +1,7 @@
 import os
 import asyncio
-import threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes
-
-# --- Web Server for Render Health Checks ---
-class HealthCheckHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/plain")
-        self.end_headers()
-        self.wfile.write(b"TraderHub Education Bot Is Active!")
-
-    def do_HEAD(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/plain")
-        self.end_headers()
-
-def run_health_server():
-    port = int(os.environ.get("PORT", 10000))
-    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
-    print(f"Health check server running on port {port}")
-    server.serve_forever()
 
 # --- Core Event Handlers ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -60,12 +39,11 @@ async def main():
     if not TOKEN:
         raise ValueError("Missing TELEGRAM_TOKEN parameter inside environment variables.")
 
-    threading.Thread(target=run_health_server, daemon=True).start()
-
+    # Initialize the polling engine cleanly without ports
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     
-    print("TraderHub Educational bot framework actively polling...")
+    print("TraderHub Educational bot framework actively polling as a Background Worker...")
     
     async with app:
         await app.initialize()
@@ -74,5 +52,5 @@ async def main():
         while True:
             await asyncio.sleep(3600)
 
-if name == "__main__":
-    asyncio.run(main())
+# --- DIRECT EXECUTION RUNNER ---
+asyncio.run(main())
