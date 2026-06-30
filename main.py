@@ -5,9 +5,6 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 
 # --- Core Event Handlers ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # 👇 CHANGE 'YOUR_GITHUB_USERNAME' TO YOUR ACTUAL GITHUB ACCOUNT USERNAME:
-    WELCOME_IMAGE_URL = "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/traderhub-education-bot/main/welcome.jpg"
-
     welcome_text = (
         "📈 **Welcome to TraderHub Education.**\n\n"
         "This channel is dedicated to educational content related to financial markets, "
@@ -31,13 +28,24 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    # Sends your image along with your welcome layout text neatly pinned below it
-    await update.message.reply_photo(
-        photo=WELCOME_IMAGE_URL,
-        caption=welcome_text,
-        reply_markup=reply_markup,
-        parse_mode="Markdown"
-    )
+    image_path = "welcome.jpg"
+
+    # Check if the file exists locally in the repository, fallback to text if missing
+    if os.path.exists(image_path):
+        with open(image_path, "rb") as photo_file:
+            await update.message.reply_photo(
+                photo=photo_file,
+                caption=welcome_text,
+                reply_markup=reply_markup,
+                parse_mode="Markdown"
+            )
+    else:
+        # Fallback if welcome.jpg was misspelled or deleted
+        await update.message.reply_text(
+            text="⚠️ [Image missing] Please ensure welcome.jpg is uploaded.\n\n" + welcome_text,
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
 
 async def main():
     TOKEN = os.environ.get("TELEGRAM_TOKEN")
@@ -56,5 +64,5 @@ async def main():
         while True:
             await asyncio.sleep(3600)
 
-# --- DIRECT EXECUTION RUNNER WITH NO TYPO-PRONE IF STATEMENTS ---
+# --- DIRECT EXECUTION RUNNER ---
 asyncio.run(main())
