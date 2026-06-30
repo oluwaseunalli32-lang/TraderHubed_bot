@@ -3,7 +3,7 @@ import asyncio
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, ContextTypes
 
 # --- Web Server for Render Health Checks ---
 class HealthCheckHandler(BaseHTTPRequestHandler):
@@ -77,5 +77,6 @@ async def main():
         while True:
             await asyncio.sleep(3600)
 
+# --- FIXED EXECUTION LINE ---
 if name == "__main__":
     asyncio.run(main())
