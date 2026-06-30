@@ -5,6 +5,9 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 
 # --- Core Event Handlers ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Direct raw file image URL extracted from your Imgur album link
+    WELCOME_IMAGE_URL = "https://i.imgur.com/vHqYvAn.jpeg"
+
     welcome_text = (
         "📈 **Welcome to TraderHub Education.**\n\n"
         "This channel is dedicated to educational content related to financial markets, "
@@ -28,8 +31,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    await update.message.reply_text(
-        text=welcome_text,
+    # Sends your exact trading image with the text cleanly attached underneath as a caption
+    await update.message.reply_photo(
+        photo=WELCOME_IMAGE_URL,
+        caption=welcome_text,
         reply_markup=reply_markup,
         parse_mode="Markdown"
     )
@@ -39,7 +44,6 @@ async def main():
     if not TOKEN:
         raise ValueError("Missing TELEGRAM_TOKEN parameter inside environment variables.")
 
-    # Initialize the polling engine cleanly without ports
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     
