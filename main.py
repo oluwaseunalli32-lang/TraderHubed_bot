@@ -44,7 +44,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Thank you for joining TraderHub Education. ✨"
     )
     
-    # Building the clean channel-join button interface link
     keyboard = [
         [InlineKeyboardButton("📢 Join TraderHub Education Channel", url="https://t.me/TraderHub_Education")]
     ]
@@ -61,11 +60,9 @@ async def main():
     if not TOKEN:
         raise ValueError("Missing TELEGRAM_TOKEN parameter inside environment variables.")
 
-    # Start the continuous server bind check routine for Render hosting instances
     threading.Thread(target=run_health_server, daemon=True).start()
 
     app = Application.builder().token(TOKEN).build()
-    
     app.add_handler(CommandHandler("start", start))
     
     print("TraderHub Educational bot framework actively polling...")
@@ -77,6 +74,6 @@ async def main():
         while True:
             await asyncio.sleep(3600)
 
-# --- CORRECTED EXECUTION LINES ---
+# --- THE CRITICAL FIX ---
 if name == "__main__":
     asyncio.run(main())
