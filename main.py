@@ -28,30 +28,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    image_path = "welcome.jpg"
-
-    # Check if the file exists locally in the repository, fallback to text if missing
-    if os.path.exists(image_path):
-        with open(image_path, "rb") as photo_file:
-            await update.message.reply_photo(
-                photo=photo_file,
-                caption=welcome_text,
-                reply_markup=reply_markup,
-                parse_mode="Markdown"
-            )
-    else:
-        # Fallback if welcome.jpg was misspelled or deleted
-        await update.message.reply_text(
-            text="⚠️ [Image missing] Please ensure welcome.jpg is uploaded.\n\n" + welcome_text,
-            reply_markup=reply_markup,
-            parse_mode="Markdown"
-        )
+    await update.message.reply_text(
+        text=welcome_text,
+        reply_markup=reply_markup,
+        parse_mode="Markdown"
+    )
 
 async def main():
     TOKEN = os.environ.get("TELEGRAM_TOKEN")
     if not TOKEN:
         raise ValueError("Missing TELEGRAM_TOKEN parameter inside environment variables.")
 
+    # Initialize the polling engine cleanly without ports
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     
